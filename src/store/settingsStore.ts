@@ -1,10 +1,9 @@
-//! 设置 store — 基于 zustand + tauri-plugin-store
+//! 设置 store — 基于 zustand + 浏览器 localStorage
 //!
-//! 启动时调用 load() 从磁盘加载, 每次 update 后 save() (防抖 300ms)
+//! 启动时调用 load() 从磁盘加载，每次 update 后 save() (防抖 300ms)
 //! 通过 subscribeAppearance() 自动应用 appearance 到 CSS 变量
 
 import { create } from 'zustand';
-import { LazyStore } from '@tauri-apps/plugin-store';
 import {
   AppSettings,
   DEFAULT_SETTINGS,
@@ -17,20 +16,32 @@ import {
   type ThemeDefinition,
   type ThemeToken,
 } from '../settings/theme';
-import { api, type PipelineConfig } from '../lib/tauri/tauri';
+import { api, type PipelineConfig } from '../lib/api';
 import { rawDataBuffer } from '../lib/buffers/dataBuffer';
 import { canFrameBuffer } from '../lib/buffers/canBuffer';
 import { logicSampleBuffer } from '../lib/buffers/logicBuffer';
 import { transitionStore } from '../lib/utils/transitionStore';
 
-const STORE_FILE = 'settings.json';
-const STORE_KEY = 'app';
+const STORE_KEY = 'app_settings';
 
-/// 单例 LazyStore — 多次调用共享底层连接
-let storeInstance: LazyStore | null = null;
-function getStore(): LazyStore {
-  if (!storeInstance) storeInstance = new LazyStore(STORE_FILE);
-  return storeInstance;
+/// 单例存储 - 使用 localStorage
+function getStoredSettings(): AppSettings | null {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as AppSettings;
+  } catch (e) {
+    console.warn('[settings] 读取 localStorage 失败:', e);
+    return null;
+  }
+}
+
+function saveStoredSettings(settings: AppSettings): void {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(settings));
+  } catch (e) {
+    console.warn('[settings] 保存 localStorage 失败:', e);
+  }
 }
 
 /// 防抖保存计时器
@@ -172,7 +183,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
   load: async () => {
     try {
-      const raw = await getStore().get<AppSettings>(STORE_KEY);
+      const raw = await getStoredSettings();
       if (raw) {
         // 与默认值合并, 防止新版本缺失字段
         const merged = migrateSettings(deepMergeSettings(DEFAULT_SETTINGS, raw));
@@ -210,9 +221,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
         // 异步保存 (防抖 300ms)
         if (saveTimer) clearTimeout(saveTimer);
         saveTimer = setTimeout(() => {
-          getStore()
-            .set(STORE_KEY, get().settings)
-            .catch((e: unknown) => console.warn('[settings] 保存失败:', e));
+          saveStoredSettings(get().settings);
         }, 300);
         // 立即应用 appearance 变更
         if (category === 'appearance') {
@@ -243,10 +252,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     applyPipelineConfig(DEFAULT_SETTINGS);
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      getStore()
-        .set(STORE_KEY, DEFAULT_SETTINGS)
-        .catch((e: unknown) => console.warn('[settings] 保存失败:', e));
-    }, 300);
+      saveStoredSettings(DEFAULT_SETTINGS);
+    }, 100);
   },
 
   resetCategory: (category) => {
@@ -262,9 +269,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     if (category === 'performance') applyPipelineConfig(settings);
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      getStore()
-        .set(STORE_KEY, get().settings)
-        .catch((e: unknown) => console.warn('[settings] 保存失败:', e));
-    }, 300);
+      saveStoredSettings(get().settings);
+    }, 100);
   },
-}));
+});
+)

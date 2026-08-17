@@ -1,5 +1,5 @@
-import { api } from '../../lib/tauri/tauri';
-import { notify, formatError } from '../../lib/tauri/notifications';
+import { api } from '../../lib/api';
+import { notify, formatError } from '../../lib/api';
 import { t } from '../../i18n';
 import type { ProtocolConfig } from '../../types';
 import { detectedChannelsPoller, setDetectedChannelsPoller } from './connection';

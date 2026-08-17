@@ -5,7 +5,7 @@
 //! - 0 -> >0 沿触发警告通知 (30s 节流, source='pipeline-drop' 同源自折叠)
 
 import { useEffect, useRef, useState } from 'react';
-import { notify } from '../../lib/tauri/notifications';
+import { notify } from '../../lib/api-env';
 import { t } from '../../i18n';
 import { useAppStore } from '../../store/appStore';
 import { DroppedInfoPopover } from '../common/DroppedInfoPopover';

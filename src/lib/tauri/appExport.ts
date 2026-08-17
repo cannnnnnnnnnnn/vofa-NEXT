@@ -6,9 +6,9 @@
 //! v2 起支持「拆分备份」: 快照可只含若干分区 (BackupSection), 导入时按分区应用。
 //! 分区划分: 节点图 / 窗口组织 / 设置 / 传输与协议 / 控件与标签页。
 
-import { save, open } from '@tauri-apps/plugin-dialog';
-import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
-import { LazyStore } from '@tauri-apps/plugin-store';
+import { save, open } from '../api-env';
+import { readTextFile, writeTextFile } from '../api-env';
+import { LazyStore } from '../api-env';
 import type { Node, Edge } from '@xyflow/react';
 import { useAppStore } from '../../store/appStore';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -17,12 +17,12 @@ import { useLayoutStore, type SidebarDock } from '../../store/layoutStore';
 import { applyAppearance } from '../../settings/applyTheme';
 import type { AppSettings } from '../../settings/defaults';
 import type { ControlTab, DataTab, ProtocolConfig, TransportConfig, WidgetConfig } from '../../types';
-import { api } from './tauri';
+import { api } from '../api-env';
 import { rawDataPortId } from '../utils/nodeDef';
 import { rawDataBuffer } from '../buffers/dataBuffer';
 import { canFrameBuffer } from '../buffers/canBuffer';
 import { logicSampleBuffer } from '../buffers/logicBuffer';
-import { notify, formatError } from './notifications';
+import { notify, formatError } from '../api-env';
 import { t } from '../../i18n';
 import { getAllRawDataViewPrefs, useRawDataViewStore, type RawDataViewPrefs } from '../buffers/rawDataViewStore';
 

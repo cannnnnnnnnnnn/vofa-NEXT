@@ -1,7 +1,5 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
-import { openUrl } from '@tauri-apps/plugin-opener';
-import { exit } from '@tauri-apps/plugin-process';
+import { getCurrentWebviewWindow, openUrl, exit } from '../../lib/api-env';
 import clsx from 'clsx';
 import { useAppStore } from '../../store/appStore';
 import { useSettingsStore } from '../../store/settingsStore';

@@ -25,7 +25,7 @@ import {
   Upload,
   RefreshCw,
 } from 'lucide-react';
-import { getVersion } from '@tauri-apps/api/app';
+import { getVersion } from '../lib/api-env';
 import { useSettingsStore } from '../store/settingsStore';
 import { useAppStore } from '../store/appStore';
 import { t } from '../i18n';
@@ -34,8 +34,8 @@ import type { AppSettings } from '../settings/defaults';
 import { ThemeEditor } from './ThemeEditor';
 import { BUILT_IN_THEMES, type ThemeDefinition } from '../settings/theme';
 import { SettingFieldDef, SETTING_FIELDS } from './settingFields';
-import { exportAppToFile, importAppFromFile } from '../lib/tauri/appExport';
-import { formatError } from '../lib/tauri/notifications';
+import { exportAppToFile, importAppFromFile } from '../lib/api';
+import { formatError } from '../lib/api';
 import { BackupModal } from './BackupModal';
 import { useUpdater } from '../lib/hooks/useUpdater';
 

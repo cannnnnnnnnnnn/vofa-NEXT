@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { X, Github, ExternalLink } from 'lucide-react';
-import { getName, getVersion } from '@tauri-apps/api/app';
-import { openUrl } from '@tauri-apps/plugin-opener';
+import { getName, getVersion, openUrl } from '../lib/api-env';
 import { useAppStore } from '../store/appStore';
 import { t } from '../i18n';
 

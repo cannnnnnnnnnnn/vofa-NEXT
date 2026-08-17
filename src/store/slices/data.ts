@@ -1,6 +1,6 @@
-import { api } from '../../lib/tauri/tauri';
+import { api } from '../../lib/api';
 import { waveformWindow, rawDataBuffer } from '../../lib/buffers/dataBuffer';
-import { notify, formatError } from '../../lib/tauri/notifications';
+import { notify, formatError } from '../../lib/api';
 import { t } from '../../i18n';
 
 export interface DataSlice {

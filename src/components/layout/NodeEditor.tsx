@@ -15,7 +15,7 @@ import '@xyflow/react/dist/style.css';
 import { useAppStore } from '../../store/appStore';
 import { createWidget } from '../../lib/utils/createWidget';
 import { t } from '../../i18n';
-import { notify } from '../../lib/tauri/notifications';
+import { notify } from '../../lib/api-env';
 import { useContextMenu } from '../../lib/hooks/useContextMenu';
 import { transitionStore } from '../../lib/utils/transitionStore';
 import { dockDrag, type WidgetDragSpec } from '../../lib/dockDrag';

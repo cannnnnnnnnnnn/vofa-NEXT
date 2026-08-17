@@ -4,8 +4,8 @@
 //! 由设置弹窗的"检查更新"按钮驱动。
 
 import { useCallback, useRef, useState } from 'react';
-import { check, type Update } from '@tauri-apps/plugin-updater';
-import { relaunch } from '@tauri-apps/plugin-process';
+import { check, type Update } from '../../api-env';
+import { relaunch } from '../../api-env';
 
 export type UpdateState =
   | { status: 'idle' }

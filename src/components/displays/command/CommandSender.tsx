@@ -14,7 +14,7 @@ import type {
   CommandBlock,
 } from '../../../types';
 import { useAppStore } from '../../../store/appStore';
-import { api } from '../../../lib/tauri/tauri';
+import { api } from '../../../lib/api-env';
 import { useGraphInputs } from '../../../lib/hooks/useGraphInput';
 import { computeChecksum, type ChecksumKind } from '../../../lib/utils/checksum';
 import { parseHex, packField, bytesToHex, bytesToAscii } from '../../../lib/utils/commandParser';

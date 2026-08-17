@@ -18,6 +18,7 @@ import type {
 } from '../../types';
 import type { NodeDef, GraphEdge } from '../utils/nodeDef';
 import { WebSerialTransport, type SerialOptions } from './webSerial';
+import { WebSocketTransport, type WebSocketTransportConfig } from './webWebSocket';
 
 /// 数据管道性能配置
 export interface PipelineConfig {
@@ -36,6 +37,7 @@ export interface PipelineConfig {
  */
 export class WebApi {
   private serialTransport: WebSerialTransport | null = null;
+  private wsTransport: WebSocketTransport | null = null;
   private protocolConfig: ProtocolConfig | null = null;
   private transportConfig: TransportConfig | null = null;
   private connectionState: ConnectionState = 'disconnected';
@@ -96,8 +98,37 @@ export class WebApi {
 
       this.connectionState = 'connected';
     } else if (config.type === 'tcpClient' || config.type === 'tcpServer' || config.type === 'udp') {
-      // TODO: 实现 TCP/UDP (使用 WebSocket 或 WebRTC Data Channel)
-      throw new Error(`${config.type} transport not yet implemented for web`);
+      // 使用 WebSocket 连接到后端代理服务
+      if (!this.wsTransport) {
+        this.wsTransport = new WebSocketTransport();
+        
+        // 设置回调
+        this.wsTransport.onConnected = () => {
+          this.connectionState = 'connected';
+        };
+        
+        this.wsTransport.onDisconnected = (reason) => {
+          console.log('WebSocket disconnected:', reason);
+          this.connectionState = 'disconnected';
+        };
+        
+        this.wsTransport.onDataReceived = (data) => {
+          this.stats.rxBytes += data.length;
+          // TODO: 触发协议解析和数据推送
+        };
+        
+        this.wsTransport.onError = (error) => {
+          console.error('WebSocket error:', error);
+          this.connectionState = 'disconnected';
+        };
+      }
+      
+      // 构建 WebSocket URL
+      // 注意：这里需要后端提供 WebSocket 代理服务
+      // 例如：ws://localhost:8080/ws?transport=tcp&host=192.168.1.100&port=8080
+      const wsUrl = this.buildWebSocketUrl(config);
+      await this.wsTransport.connect({ url: wsUrl });
+      
     } else if (config.type === 'testData') {
       // TODO: 实现测试数据生成器
       this.connectionState = 'connected';
@@ -105,32 +136,70 @@ export class WebApi {
       throw new Error(`${config.type} transport requires native backend`);
     }
   }
+  
+  /**
+   * 构建 WebSocket URL
+   * 将 TransportConfig 转换为 WebSocket 连接参数
+   */
+  private buildWebSocketUrl(config: TransportConfig): string {
+    // 默认连接到本地代理服务器
+    const baseUrl = process.env.VITE_WS_PROXY_URL || 'ws://localhost:8080/ws';
+    const params = new URLSearchParams();
+    
+    params.set('transport', config.type);
+    
+    if (config.type === 'tcpClient' || config.type === 'tcpServer') {
+      if (config.tcpHost) params.set('host', config.tcpHost);
+      if (config.tcpPort) params.set('port', String(config.tcpPort));
+    } else if (config.type === 'udp') {
+      if (config.udpHost) params.set('host', config.udpHost);
+      if (config.udpPort) params.set('port', String(config.udpPort));
+    }
+    
+    const queryString = params.toString();
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  }
 
   async closeTransport(): Promise<void> {
     if (this.serialTransport) {
       await this.serialTransport.close();
       this.serialTransport = null;
     }
+    if (this.wsTransport) {
+      await this.wsTransport.close();
+      this.wsTransport = null;
+    }
     this.connectionState = 'disconnected';
   }
 
   async sendRaw(data: number[]): Promise<void> {
-    if (!this.serialTransport) {
+    if (this.serialTransport) {
+      const uint8Array = new Uint8Array(data);
+      await this.serialTransport.write(uint8Array);
+      this.stats.txBytes += data.length;
+      this.stats.txFrames++;
+    } else if (this.wsTransport) {
+      const uint8Array = new Uint8Array(data);
+      await this.wsTransport.send(uint8Array);
+      this.stats.txBytes += data.length;
+      this.stats.txFrames++;
+    } else {
       throw new Error('Transport not open');
     }
-    const uint8Array = new Uint8Array(data);
-    await this.serialTransport.write(uint8Array);
-    this.stats.txBytes += data.length;
-    this.stats.txFrames++;
   }
 
   async sendString(text: string): Promise<void> {
-    if (!this.serialTransport) {
+    if (this.serialTransport) {
+      await this.serialTransport.writeString(text);
+      this.stats.txBytes += text.length;
+      this.stats.txFrames++;
+    } else if (this.wsTransport) {
+      await this.wsTransport.sendString(text);
+      this.stats.txBytes += text.length;
+      this.stats.txFrames++;
+    } else {
       throw new Error('Transport not open');
     }
-    await this.serialTransport.writeString(text);
-    this.stats.txBytes += text.length;
-    this.stats.txFrames++;
   }
 
   async sendWidgetValue(binding: WidgetBinding, value: number): Promise<void> {

@@ -15,7 +15,7 @@ import {
   applySnapshot,
   type AppSnapshot,
   type BackupSection,
-} from '../lib/tauri/appExport';
+} from '../lib/api';
 
 interface BackupModalProps {
   isOpen: boolean;
