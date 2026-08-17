@@ -9,7 +9,7 @@ import {
   type Connection,
 } from '@xyflow/react';
 import { nanoid } from 'nanoid';
-import { api } from '../../lib/tauri/tauri';
+import { api } from '../../lib/api';
 import { setInputValue as apiSetInputValue, submitCustomOutput as apiSubmitCustomOutput } from '../../lib/buffers/graphSubscription';
 import { CHANNEL_SOURCE_ID, createChannelSourceNode, syncTabGraphToBackend } from '../appStoreHelpers';
 import { rawDataPortId } from '../../lib/utils/nodeDef';

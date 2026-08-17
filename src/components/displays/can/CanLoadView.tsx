@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '../../../store/appStore';
 import { useCanLoadAlarmStore } from '../../../store/canLoadAlarmStore';
-import { api } from '../../../lib/tauri/tauri';
-import { notify, formatError } from '../../../lib/tauri/notifications';
+import { api } from '../../../lib/api-env';
+import { notify, formatError } from '../../../lib/api-env';
 import { t } from '../../../i18n';
 import { Trash2, Activity, Download, Bell, BellOff } from 'lucide-react';
 import type { CanLoadSnapshot, CanIdLoadHistory } from '../../../types';

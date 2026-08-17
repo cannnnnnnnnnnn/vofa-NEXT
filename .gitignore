@@ -7,31 +7,24 @@ dist/
 build/
 target/
 
-# Logs
-*.log
-
-# Environment
-.env
-.env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+env/
 venv/
 .venv/
-.env
 .ENV
+.env
 
-# Temporary files
-*.tmp
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
 
@@ -43,15 +36,6 @@ Thumbs.db
 coverage/
 htmlcov/
 .coverage
-
-# MyPy
-.mypy_cache/
-
-# PyTest
-.pytest_cache/
-
-# Gradle
-.gradle/
 
 # Compressed files
 *.zip

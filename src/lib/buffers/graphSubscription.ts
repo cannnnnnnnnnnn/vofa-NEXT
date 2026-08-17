@@ -1,6 +1,6 @@
-import { invoke, Channel } from '@tauri-apps/api/core';
+import { invoke, Channel } from '../api-env';
 import type { SpectrumResult } from '../../types';
-import { closeTauriChannel } from '../tauri/tauri';
+import { closeTauriChannel } from '../api-env';
 
 /// 后端图输出快照 — 与 Rust GraphOutputSnapshot 对应
 export interface GraphOutputSnapshot {

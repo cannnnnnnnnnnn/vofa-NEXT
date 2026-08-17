@@ -5,7 +5,7 @@ import { useAppStore, type AppStore } from '../../store/appStore';
 import { useDockStore } from '../../store/dockStore';
 import { useOnboardingStore } from '../../store/onboardingStore';
 import { useSettingsStore } from '../../store/settingsStore';
-import { notify } from '../../lib/tauri/notifications';
+import { notify } from '../../lib/api-env';
 import { useSlidingPill, SlidingPill } from '../ui/SlidingPill';
 import { AnimatedSwitch } from '../ui/AnimatedSwitch';
 import { NodeEditor } from './NodeEditor';

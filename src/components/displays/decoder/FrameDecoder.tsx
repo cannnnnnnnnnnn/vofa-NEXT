@@ -16,7 +16,7 @@ import type {
   FrameDecoderManualResult,
 } from '../../../types';
 import { useAppStore } from '../../../store/appStore';
-import { api } from '../../../lib/tauri/tauri';
+import { api } from '../../../lib/api-env';
 import { t } from '../../../i18n';
 import { nanoid } from 'nanoid';
 import {

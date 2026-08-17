@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { notify, type AppNotification } from '../lib/tauri/notifications';
+import { notify, type AppNotification } from '../lib/api';
 import { useAppStore } from '../store/appStore';
 import { t } from '../i18n';
 import { XCircle, AlertTriangle, Info, X, ChevronDown } from 'lucide-react';

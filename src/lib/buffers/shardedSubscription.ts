@@ -1,5 +1,5 @@
-import { invoke, Channel } from '@tauri-apps/api/core';
-import { closeTauriChannel } from '../tauri/tauri';
+import { invoke, Channel } from '../api-env';
+import { closeTauriChannel } from '../api-env';
 
 /// 分片池大小 — 与后端 pipeline::stream::MAX_STREAM_SHARDS 一致
 export const STREAM_SHARDS = 4;

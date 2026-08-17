@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke } from '../api-env';
 import type { LogicSampleBatch, DecodedEventBatch } from '../../types';
 import { makeOrderedSink, subscribeSharded } from './shardedSubscription';
 

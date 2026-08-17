@@ -13,7 +13,7 @@ import {
   Upload,
   type LucideIcon,
 } from 'lucide-react';
-import { ask, confirm } from '@tauri-apps/plugin-dialog';
+import { ask, confirm } from '../../lib/api-env';
 import { useAppStore } from '../../store/appStore';
 import { t } from '../../i18n';
 import { QUICK_START_TEMPLATES, type QuickStartTemplate } from '../../lib/quickstart/templates';
